@@ -8,47 +8,13 @@ Page({
    */
   data: {
     userInfo: null,
-    orderList: [{
-      id: 0,
-      productList: [{
-        count: 1,
-        image: 'https://s3.cn-north-1.amazonaws.com.cn/u-img/product1.jpg',
-        name: 'Product 1',
-        price: "50.50",
-      }]
-    },
-    {
-      id: 1,
-      productList: [{
-        count: 1,
-        image: 'https://s3.cn-north-1.amazonaws.com.cn/u-img/product2.jpg',
-        name: 'Product 2',
-        price: "40.10",
-      },
-      {
-        count: 1,
-        image: 'https://s3.cn-north-1.amazonaws.com.cn/u-img/product3.jpg',
-        name: 'Product 3',
-        price: "30.50",
-      }
-      ]
-    },
-    {
-      id: 2,
-      productList: [{
-        count: 2,
-        image: 'https://s3.cn-north-1.amazonaws.com.cn/u-img/product4.jpg',
-        name: 'Product 4',
-        price: "70.40",
-      }]
-    }
-    ],
+    orderList: [],
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     this.data.orderList.forEach(order => {
       order.productList.forEach(product => product.price = util.setPrice(product.price))
     })
@@ -58,7 +24,7 @@ Page({
   },
 
   //跳到我的
-  gotologin(){
+  gotologin() {
     wx.switchTab({
       url: '../profile/profile',
     })
@@ -67,53 +33,75 @@ Page({
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
     util.getUserInfo().then(userInfo => {
       this.setData({
         userInfo
       })
+
+      this.getOrderList()
+
+    }).catch(err => {
+      console.log("err=", err)
+    })
+  },
+
+  getOrderList(){
+    wx.showLoading({
+      title: 'Loading...',
+    })
+    db.getOrderList().then(res=>{
+      wx.hideLoading()
+      const data = res.result
+      if(data){
+        this.setData({
+          orderList:data
+        })
+      }
+    }).catch(err=>{
+      wx.hideLoading()
     })
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })

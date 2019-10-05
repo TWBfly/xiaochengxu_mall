@@ -38,6 +38,40 @@ Page({
     })
 
   },
+  //Buy it now
+  buy() {
+    wx.showLoading({
+      title: 'buying...',
+    })
+
+    const productToBuy = Object.assign({
+      count: 1
+    }, this.data.product)
+
+    productToBuy.productId = productToBuy._id
+
+    //为什么要加入订单？？db.addToOrder是云函数
+    db.addToOrder({
+      list: [productToBuy]
+    }).then(res => {
+      wx.hideLoading()
+      console.log("success==",res)
+      const data = res.result
+      if(data){
+        wx.showToast({
+          title: 'Success',
+        })
+      }
+    }).catch(err => {
+      wx.hideLoading()
+      console.log("fail==",err)
+      wx.showToast({
+        icon:'none',
+        title: "Fail",
+      })
+    })
+
+  },
 
   goback() {
     setTimeout(() => {
